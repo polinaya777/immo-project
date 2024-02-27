@@ -40,7 +40,7 @@ DEFAULTS = {
 }
 
 # Load model and artifacts once during startup
-artifacts = joblib.load("models/artifacts.joblib")
+artifacts = joblib.load("models/Gradient_boost_artifacts.joblib")
 imputer = artifacts["imputer"]
 enc = artifacts["enc"]
 model = artifacts["model"]
@@ -66,7 +66,7 @@ class Features(BaseModel):
 # Check function
 @app.get("/")
 async def read_root():
-    return {"message": "API is alive!"}
+    return {"message": "Welcome to the Immo Eliza ML model API!"}
 
 # Predict function
 @app.post("/predict")
@@ -96,5 +96,6 @@ async def predict(features: Features):
 
     # Make predictions
     prediction = model.predict(data_df)
+    predicted_value = prediction[0]
 
-    return {f"Prediction: {prediction:.2f}"}
+    return {"Prediction of price": f"€ {predicted_value:.2f}"}
