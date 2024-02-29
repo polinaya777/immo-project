@@ -8,10 +8,13 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 
-
 def train():
     # Load the data
     data = pd.read_csv("data/properties.csv")
+    data_small = pd.read_csv("data/properties_small.csv")
+
+    # Shuffle the data
+    data = data.sample(frac=1, random_state=505).reset_index(drop=True)
     
     # Define features to use
     num_features = [
@@ -55,7 +58,7 @@ def train():
 
     # Split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.20, random_state=505
+        X, y, test_size=0.30, random_state=505
     )
 
     # Impute numerical features missing values using SimpleImputer
@@ -89,10 +92,14 @@ def train():
     )
 
     # Instantiate the Gradient Boosting Regressor
-    model = GradientBoostingRegressor(n_estimators=200, max_depth=9, random_state=505)
+    model = GradientBoostingRegressor(n_estimators=250, max_depth=10, random_state=505)
     
     # Train the model
     model.fit(X_train, y_train)
+
+    # Test the small dataset
+    X_small = data_small[num_features + fl_features + cat_features]
+    y_small = data_small["price"]
 
     # Make predictions on the train set and print scores
     y_pred_train = model.predict(X_train)
@@ -102,8 +109,6 @@ def train():
     print(f"Train set R² score: {r2_train}")
     print(f"Train set MAE: {mae_test}")
 
-    
-
     # Make predictions on the test set
     y_pred_test = model.predict(X_test)
     r2_test = r2_score(y_test, y_pred_test)
@@ -112,6 +117,13 @@ def train():
     print(f"Test set R² score: {r2_test}")
     print(f"Test set MAE: {mae_test}")
     
+    # Make predictions on the small dataset
+    y_pred_small = model.predict(X_small)
+    r2_small = r2_score(y_small, y_pred_small)
+    mae_small = mean_absolute_error(y_small, y_pred_small)
+    mse_small = mean_squared_error(y_small, y_pred_small)
+    print(f"Small set R² score: {r2_small}")
+    print(f"Small set MAE: {mae_small}")
 
     # Save the model
     artifacts = {
