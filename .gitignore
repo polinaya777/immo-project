@@ -1,6 +1,9 @@
 # Ignore everything in venv folder
 venv/
 
+# Ignore the secret streamlit file
+streamlit/.streamlit/secrets.toml
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

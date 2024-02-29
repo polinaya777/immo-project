@@ -31,7 +31,7 @@ if page == "Home":
 elif page == "Price prediction":
     
     # The URL of FastAPI endpoint
-    url = "https://projects-immo-latest.onrender.com/predict"
+    url = st.secrets["render_url"]
     
     st.title("How much is your home worth?")
     st.text("House price predictor by MerMade")
